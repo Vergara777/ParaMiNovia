@@ -47,6 +47,12 @@
     opacity: 0.5;
   }
 
+  /* Ocultar cursor en dispositivos táctiles (móviles/tablets) */
+  @media (pointer: coarse) {
+    .cursor, .cursor-ring { display: none !important; }
+    body { cursor: auto !important; }
+  }
+
   /* PARTICLES */
   #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   .petal {
@@ -725,10 +731,8 @@
 <div id="particles"></div>
 
 <!-- ─── MUSIC ─── -->
-<!-- 🎵 Coloca tu canción en: cancion/cancion.mp3 -->
-<audio id="bgMusic" loop>
-  <source src="cancion/Gracias, Silvestre Dangond - Letra.mp3" type="audio/mpeg">
-  <source src="cancion/Gracias, Silvestre Dangond - Letra.mp3" type="audio/ogg">
+<audio id="bgMusic" loop preload="auto">
+  <source src="cancion/Cancion.MP3" type="audio/mpeg">
 </audio>
 <button id="musicBtn" onclick="toggleMusic()" title="Música">
   <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="musicIcon">
@@ -1063,7 +1067,20 @@ function startWithMusic(play) {
   prompt.classList.add('hidden');
   
   if (play) {
-    toggleMusic();
+    // Forzamos el play directamente aquí para asegurar que el navegador lo capte
+    audio.play().then(() => {
+        const musicIcon = document.getElementById('musicIcon');
+        musicIcon.innerHTML = `
+          <rect x="6" y="4" width="4" height="16" fill="white"></rect>
+          <rect x="14" y="4" width="4" height="16" fill="white"></rect>
+        `;
+        musicBtn.classList.add('playing');
+        document.getElementById('musicLabel').textContent = 'Reproduciendo ♫';
+        noteInterval = setInterval(createNote, 400);
+        playing = true;
+    }).catch(err => {
+        console.error("No se pudo iniciar la música:", err);
+    });
   }
 }
 
@@ -1076,14 +1093,24 @@ function toggleMusic() {
     document.getElementById('musicLabel').textContent = 'Nuestra canción';
     clearInterval(noteInterval);
   } else {
-    audio.play().catch(() => {});
-    musicIcon.innerHTML = `
-      <rect x="6" y="4" width="4" height="16" fill="white"></rect>
-      <rect x="14" y="4" width="4" height="16" fill="white"></rect>
-    `;
-    musicBtn.classList.add('playing');
-    document.getElementById('musicLabel').textContent = 'Reproduciendo ♫';
-    noteInterval = setInterval(createNote, 400);
+    // Intentar reproducir con manejo de errores y carga
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        musicIcon.innerHTML = `
+          <rect x="6" y="4" width="4" height="16" fill="white"></rect>
+          <rect x="14" y="4" width="4" height="16" fill="white"></rect>
+        `;
+        musicBtn.classList.add('playing');
+        document.getElementById('musicLabel').textContent = 'Reproduciendo ♫';
+        noteInterval = setInterval(createNote, 400);
+        playing = true;
+      }).catch(error => {
+        console.error("Error al reproducir audio:", error);
+        playing = false;
+      });
+    }
+    return; // Evitar el toggle manual si estamos esperando la promesa
   }
   playing = !playing;
 }
