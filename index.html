@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8 Meses Contigo, Shadya 💕</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -54,7 +55,7 @@
   }
 
   /* PARTICLES */
-  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  #particles { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
   .petal {
     position: absolute;
     width: 8px; height: 8px;
@@ -62,10 +63,17 @@
     border-radius: 0 50% 0 50%;
     opacity: 0;
     animation: fall linear infinite;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  }
+  .petal.heart-shape {
+    background: transparent !important;
+    display: flex; align-items: center; justify-content: center;
   }
   @keyframes fall {
-    0% { transform: translateY(-20px) rotate(0deg); opacity: 0.7; }
-    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0; }
   }
 
   /* ─── MUSIC PLAYER ─── */
@@ -421,13 +429,19 @@
   }
   .envelope-icon {
     text-align: center;
-    font-size: 3rem;
     margin-bottom: 30px;
     cursor: pointer;
-    transition: transform 0.4s;
-    display: block;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    display: flex; justify-content: center; align-items: center;
+    width: 80px; height: 80px;
+    background: white;
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    box-shadow: 0 10px 25px rgba(200,83,106,0.15);
+    border: 1px solid rgba(200,83,106,0.1);
   }
-  .envelope-icon:hover { transform: scale(1.1) rotate(-5deg); }
+  .envelope-icon:hover { transform: scale(1.1) rotate(-5deg); box-shadow: 0 15px 35px rgba(200,83,106,0.25); }
+  .envelope-icon svg { width: 35px; height: 35px; stroke: var(--rose); fill: none; stroke-width: 2; }
 
   .letter-body {
     background: white;
@@ -703,9 +717,25 @@
     50% { transform: translateY(-10px); }
   }
 
-  /* Scroll reveal */
-  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+  /* Scroll reveal lento y elegante */
+  .reveal { 
+    opacity: 0; 
+    transform: translateY(50px) scale(0.96); 
+    transition: opacity 1.4s cubic-bezier(0.23, 1, 0.32, 1), 
+                transform 1.4s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform, opacity;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+  /* Efecto escalonado (Stagger) para que salgan uno a uno */
+  .stagger > *:nth-child(1) { transition-delay: 0.1s; }
+  .stagger > *:nth-child(2) { transition-delay: 0.2s; }
+  .stagger > *:nth-child(3) { transition-delay: 0.3s; }
+  .stagger > *:nth-child(4) { transition-delay: 0.4s; }
+  .stagger > *:nth-child(5) { transition-delay: 0.5s; }
+  .stagger > *:nth-child(6) { transition-delay: 0.6s; }
+  .stagger > *:nth-child(7) { transition-delay: 0.7s; }
+  .stagger > *:nth-child(8) { transition-delay: 0.8s; }
 </style>
 </head>
 <body>
@@ -757,25 +787,25 @@
 
 <!-- ░░░ COUNTER ░░░ -->
 <section id="counter">
-  <p class="counter-title">El tiempo que llevamos juntos</p>
-  <div class="counter-grid">
-    <div class="counter-box">
+  <p class="counter-title reveal">El tiempo que llevamos juntos</p>
+  <div class="counter-grid stagger">
+    <div class="counter-box reveal">
       <div class="counter-num" id="cnt-months">0</div>
       <div class="counter-label">Meses</div>
     </div>
-    <div class="counter-box">
+    <div class="counter-box reveal">
       <div class="counter-num" id="cnt-days">0</div>
       <div class="counter-label">Días</div>
     </div>
-    <div class="counter-box">
+    <div class="counter-box reveal">
       <div class="counter-num" id="cnt-hours">0</div>
       <div class="counter-label">Horas</div>
     </div>
-    <div class="counter-box">
+    <div class="counter-box reveal">
       <div class="counter-num" id="cnt-mins">0</div>
       <div class="counter-label">Minutos</div>
     </div>
-    <div class="counter-box">
+    <div class="counter-box reveal">
       <div class="counter-num" id="cnt-secs">0</div>
       <div class="counter-label">Segundos</div>
     </div>
@@ -793,10 +823,10 @@
 -->
 <section id="fotos">
   <div class="section-header reveal">
-    <p class="section-eyebrow">Nuestros Momentos</p>
-    <h2 class="section-title">Cada foto, un recuerdo</h2>
+    <p class="section-eyebrow">Nuestros Momentos juntos</p>
+    <h2 class="section-title">Cada foto, un recuerdo inolvidable</h2>
   </div>
-  <div class="photo-grid" id="photoGrid"></div>
+  <div class="photo-grid stagger" id="photoGrid"></div>
 </section>
 
 <!-- ░░░ CARTA ░░░ -->
@@ -805,9 +835,14 @@
     <p class="section-eyebrow">Para Ti</p>
     <h2 class="section-title">Una carta con el corazón</h2>
   </div>
-  <div class="letter-wrap">
+  <div class="letter-wrap reveal">
     <p class="letter-hint" id="letterHint">Toca el sobre para abrir la carta 💌</p>
-    <span class="envelope-icon" id="envelopeBtn" onclick="toggleLetter()">💌</span>
+    <div class="envelope-icon" id="envelopeBtn" onclick="toggleLetter()">
+      <svg viewBox="0 0 24 24" id="envSvg" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <polyline points="22,6 12,13 2,6"></polyline>
+      </svg>
+    </div>
     <div class="letter-body" id="letterBody">
       <p class="letter-date">25 de Febrero, 2026</p>
       <!-- ✏ EDITA AQUÍ TU CARTA PERSONAL -->
@@ -826,12 +861,12 @@
     <p class="section-eyebrow" style="color:var(--blush);opacity:0.7;">Por qué te amo</p>
     <h2 class="section-title" style="color:var(--blush);">8 razones para quererte</h2>
   </div>
-  <div class="reasons-grid" id="reasonsGrid"></div>
+  <div class="reasons-grid stagger" id="reasonsGrid"></div>
 </section>
 
 <!-- ░░░ FINAL ░░░ -->
 <section id="final">
-  <p class="final-text">
+  <p class="final-text reveal">
     Que sean <em>8 meses</em> el comienzo de algo que dure <em>toda la vida</em>.<br>
     Te amo, <em>Shadya</em>.
   </p>
@@ -857,14 +892,18 @@
 //  caption: texto que aparece al pasar el mouse
 // ──────────────────────────────────────────────────
 const media = [
-  { type: 'image', src: 'fotos/Minovia1.jpeg', caption: 'Nuestro primer momento juntos 💕' },
-  { type: 'image', src: 'fotos/Minovia2.jpeg', caption: 'Contigo, siempre 🌹'             },
-  { type: 'video', src: 'fotos/MinoviaVideo.mp4', caption: 'Momentos en movimiento 🎬'  },
-  { type: 'image', src: 'fotos/Minovia3.jpeg', caption: 'Momentos que atesoro'             },
-  { type: 'image', src: 'fotos/Minovia4.jpeg', caption: 'Mi lugar favorito: a tu lado'     },
-  { type: 'video', src: 'fotos/MinoviaVideo2.mp4', caption: 'Nuestras risas juntas ❤️'   },
-  { type: 'image', src: 'fotos/Minovia5.jpeg', caption: 'Recuerdos eternos'                },
-  { type: 'image', src: 'fotos/Minovia6.jpeg', caption: 'Juntos somos perfectos'           },
+  { type: 'image', src: 'fotos/Minovia1.jpeg', caption: 'Nuestra Primera Navidad juntos 🎄✨💕' },
+  { type: 'image', src: 'fotos/Minovia2.jpeg', caption: 'Contigo, siempre 🌹👫🔒'             },
+  { type: 'video', src: 'fotos/MinoviaVideo.mp4', caption: 'Momentos en movimiento 🎬✨💖'  },
+  { type: 'image', src: 'fotos/Minovia3.jpeg', caption: 'Momentos que atesoro 💎💫💖'             },
+  { type: 'image', src: 'fotos/Minovia4.jpeg', caption: 'Mi lugar favorito: a tu lado 🏡💘✨'     },
+  { type: 'video', src: 'fotos/MinoviaVideo2.mp4', caption: 'Nuestras risas y momentos juntos 😂❤️🥰'   },
+  { type: 'image', src: 'fotos/Minovia5.jpeg', caption: 'Recuerdos eternos 📸💫💍'                },
+  { type: 'image', src: 'fotos/Minovia6.jpeg', caption: 'Juntos somos perfectos 🧩✨💘'           },
+  { type: 'image', src: 'fotos/Minovia7.jpeg', caption: 'Día de tu cumpleaños 🎂🎉👑'           },
+  { type: 'image', src: 'fotos/Minovia8.jpeg', caption: 'La primera vez que nos vimos 💘👀✨'           },
+  { type: 'image', src: 'fotos/Minovia10.jpeg', caption: 'Una de nuestras primeras fotos 🤳💖🎞️'           },
+  { type: 'image', src: 'fotos/Minovia9.jpeg', caption: 'Nuestra mirada lo dice todo 👁️‍🗨️💞🔒'           },
 ];
 
 // ──────────────────────────────────────────────────
@@ -897,22 +936,41 @@ document.addEventListener('mousemove', e => {
   }, 80);
 });
 
-// ─── PETALS ───────────────────────────────────────
+// ─── PETALS & HEARTS ──────────────────────────────
 const petalContainer = document.getElementById('particles');
-for (let i = 0; i < 18; i++) {
+function createParticle() {
   const p = document.createElement('div');
-  p.className = 'petal';
-  p.style.cssText = `
-    left: ${Math.random()*100}%;
-    width: ${4 + Math.random()*8}px;
-    height: ${4 + Math.random()*8}px;
-    animation-duration: ${6 + Math.random()*10}s;
-    animation-delay: ${Math.random()*8}s;
-    opacity: ${0.3 + Math.random()*0.5};
-    background: hsl(${340 + Math.random()*20}, ${60+Math.random()*30}%, ${80+Math.random()*10}%);
-  `;
+  const isHeart = Math.random() > 0.6; // 40% corazones
+  p.className = isHeart ? 'petal heart-shape' : 'petal';
+  
+  const size = 6 + Math.random() * 10;
+  const duration = 8 + Math.random() * 12;
+  const left = Math.random() * 100;
+  
+  if (isHeart) {
+    p.innerHTML = '❤️';
+    p.style.fontSize = `${size}px`;
+    p.style.color = Math.random() > 0.5 ? 'var(--rose)' : 'var(--blush)';
+  } else {
+    p.style.width = `${size}px`;
+    p.style.height = `${size}px`;
+    p.style.background = `hsl(${340 + Math.random() * 25}, ${70 + Math.random() * 20}%, ${80 + Math.random() * 10}%)`;
+    p.style.borderRadius = '0 50% 0 50%';
+  }
+  
+  p.style.left = `${left}%`;
+  p.style.animationDuration = `${duration}s`;
+  p.style.animationDelay = `${-Math.random() * 20}s`;
+  
   petalContainer.appendChild(p);
+  
+  // Limpiar partículas viejas
+  setTimeout(() => p.remove(), duration * 1000);
 }
+
+// Crear ráfaga inicial y luego goteo constante
+for (let i = 0; i < 25; i++) createParticle();
+setInterval(createParticle, 500);
 
 // ─── COUNTER ──────────────────────────────────────
 const startDate = new Date('2025-06-25T00:00:00');
@@ -1010,8 +1068,68 @@ function toggleLetter() {
   letterOpen = !letterOpen;
   const body = document.getElementById('letterBody');
   const hint = document.getElementById('letterHint');
+  const btn = document.getElementById('envelopeBtn');
+  
   body.classList.toggle('open', letterOpen);
   hint.style.display = letterOpen ? 'none' : 'block';
+  
+  const envSvg = document.getElementById('envSvg');
+  if (letterOpen) {
+    // Icono de libro abierto (líneas limpias)
+    envSvg.innerHTML = `
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+    `;
+    btn.style.background = 'var(--rose)';
+    envSvg.style.stroke = 'white';
+    btn.style.transform = 'scale(1.1) translateY(-5px)';
+  } else {
+    // Icono de sobre cerrado (líneas limpias)
+    envSvg.innerHTML = `
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+      <polyline points="22,6 12,13 2,6"></polyline>
+    `;
+    btn.style.background = 'white';
+    envSvg.style.stroke = 'var(--rose)';
+    btn.style.transform = 'scale(1)';
+  }
+
+  if (letterOpen) {
+    // 🎉 EXPLOSIÓN DE AMOR (Confetti de corazones)
+    const duration = 3 * 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#c8536a', '#f2c4ce', '#c9a96e']
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#c8536a', '#f2c4ce', '#c9a96e']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+
+    // Corazones centrales
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#c8536a', '#7b2d42'],
+      shapes: ['circle'],
+      scalar: 1.2
+    });
+  }
 }
 
 // ─── REASONS ──────────────────────────────────────
@@ -1020,7 +1138,7 @@ function renderReasons() {
   grid.innerHTML = '';
   reasons.forEach((r, i) => {
     const card = document.createElement('div');
-    card.className = 'reason-card';
+    card.className = 'reason-card reveal';
     card.innerHTML = `
       <div class="reason-num">0${i+1}</div>
       <p class="reason-text">${r}</p>`;
