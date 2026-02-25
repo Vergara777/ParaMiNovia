@@ -922,8 +922,21 @@ const reasons = [
 
 // ─── SCROLL REVEAL (Mover arriba para que esté disponible) ───
 const revealObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.15 });
+  entries.forEach(e => { 
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Si el elemento es una card con video, reproducir el video
+      const video = e.target.querySelector('video');
+      if (video) {
+        video.play().catch(err => console.log("Autoplay prevenido:", err));
+      }
+    } else {
+      // Pausar video si sale de la vista (opcional, mejora rendimiento)
+      const video = e.target.querySelector('video');
+      if (video) video.pause();
+    }
+  });
+}, { threshold: 0.3 }); // Aumentado un poco para que se vea más centrado al activar
 window.revealObserver = revealObserver;
 
 // ─── CURSOR ───────────────────────────────────────
@@ -1001,7 +1014,7 @@ function renderPhotos() {
     
     if (m.type === 'video') {
       card.innerHTML = `
-        <video src="${m.src}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openModal('${m.src}', 'video')"></video>
+        <video src="${m.src}" muted loop playsinline onclick="openModal('${m.src}', 'video')"></video>
         <div class="video-overlay"><span class="icon">▶</span></div>
         <div class="photo-caption">${m.caption}</div>
       `;
