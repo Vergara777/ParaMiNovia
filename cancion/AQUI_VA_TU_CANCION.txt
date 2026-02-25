@@ -1,0 +1,11 @@
+🎵 INSTRUCCIONES - CARPETA DE CANCIÓN
+======================================
+
+Coloca aquí la canción de ustedes con este nombre exacto:
+
+  cancion.mp3
+
+También puedes usar .ogg o .wav (actualiza la extensión en index.html).
+
+La canción se reproducirá automáticamente al abrir la página
+(con un botón flotante para pausar/reproducir).

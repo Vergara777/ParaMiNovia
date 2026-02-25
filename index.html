@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8 Meses Contigo, Shadya 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #c8536a;
+    --blush: #f2c4ce;
+    --cream: #fdf6f0;
+    --gold: #c9a96e;
+    --deep: #2a1420;
+    --wine: #7b2d42;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--deep);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--rose);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--rose);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.4s ease, opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* PARTICLES */
+  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .petal {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--blush);
+    border-radius: 0 50% 0 50%;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ─── MUSIC PLAYER ─── */
+  #musicBtn {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    width: 56px; height: 56px;
+    background: var(--rose);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    cursor: pointer;
+    z-index: 900;
+    box-shadow: 0 8px 32px rgba(200,83,106,0.4);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  #musicBtn:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 12px 40px rgba(200,83,106,0.5); }
+  #musicBtn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; pointer-events: none; transition: transform 0.3s ease; }
+  #musicBtn.playing svg { transform: scale(0.9); }
+  #musicBtn.playing { animation: pulse 2s infinite; }
+  
+  /* NOTAS MUSICALES VOLANDO */
+  .note {
+    position: fixed;
+    pointer-events: none;
+    color: var(--rose);
+    font-size: 1.2rem;
+    z-index: 899;
+    animation: floatNote 3s ease-out forwards;
+    opacity: 0;
+  }
+  @keyframes floatNote {
+    0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.8; }
+    100% { transform: translate(var(--x), var(--y)) scale(1.5) rotate(var(--r)); opacity: 0; }
+  }
+
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 8px 32px rgba(200,83,106,0.4); }
+    50% { box-shadow: 0 8px 48px rgba(200,83,106,0.7); }
+  }
+  .music-label {
+    position: fixed;
+    bottom: 34px; right: 94px;
+    background: var(--deep);
+    color: var(--blush);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    font-weight: 300;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #musicBtn:hover + .music-label,
+  #musicBtn.playing + .music-label { opacity: 1; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 60px 20px 140px;
+    background: linear-gradient(160deg, #fdf0f3 0%, #fdf6f0 50%, #f9ede3 100%);
+  }
+
+  .hero-badge {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(100px, 20vw, 240px);
+    font-weight: 300;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--rose);
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+    position: relative;
+  }
+  .hero-number::after {
+    content: '8';
+    position: absolute; top: 6px; left: 6px;
+    color: var(--blush);
+    opacity: 0.3;
+    z-index: -1;
+    -webkit-text-stroke: 0;
+  }
+
+  .hero-meses {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 6vw, 70px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--wine);
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+    margin-top: 0;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 4.5vw, 52px);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+    margin-top: 12px;
+  }
+
+  .hero-divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose), transparent);
+    margin: 24px auto;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s forwards;
+  }
+
+  .hero-sub {
+    font-weight: 200;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rose);
+    opacity: 0;
+    animation: fadeUp 1s 1.4s forwards;
+    max-width: 80%;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 25px;
+    left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    opacity: 0;
+    animation: fadeUpScroll 1s 2s forwards;
+  }
+  @keyframes fadeUpScroll {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .scroll-hint span {
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--rose); font-weight: 300;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--rose), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0%, 100% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.3); opacity: 0.3; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* COUNTER */
+  #counter {
+    padding: 80px 20px;
+    background: var(--deep);
+    position: relative; z-index: 1;
+    overflow: hidden;
+  }
+  #counter::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, var(--wine) 0%, transparent 70%);
+    opacity: 0.3;
+  }
+  .counter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 40px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--blush);
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+  }
+  .counter-grid {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .counter-box {
+    text-align: center;
+    padding: 25px 10px;
+    border: 1px solid rgba(200, 83, 106, 0.3);
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(4px);
+    flex: 1 1 160px; /* Aumentado para dar más espacio horizontal */
+    position: relative;
+    /* Eliminado max-width y overflow para evitar cortes */
+  }
+  .counter-box::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose), transparent);
+  }
+  .counter-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 6vw, 56px); /* Tamaño más controlado */
+    font-weight: 300;
+    color: var(--rose);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .counter-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--blush);
+    opacity: 0.6;
+    margin-top: 8px;
+    font-weight: 300;
+  }
+
+  /* PHOTOS */
+  #fotos {
+    padding: 90px 20px;
+    position: relative; z-index: 1;
+    background: var(--cream);
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .section-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--rose);
+    font-weight: 300;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--deep);
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .photo-card {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    background: #f0e6ea;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .photo-card:hover { transform: scale(1.03); z-index: 2; box-shadow: 0 15px 45px rgba(200,83,106,0.15); }
+  .photo-card:nth-child(3n+2) { margin-top: 28px; }
+
+  .photo-card img, .photo-card video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    display: block;
+  }
+  .photo-card:hover img, .photo-card:hover video { transform: scale(1.06); }
+
+  .video-overlay {
+    position: absolute; top: 15px; right: 15px;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--rose);
+    font-size: 0.8rem;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  /* Placeholder cuando no hay foto */
+  .photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+    color: var(--blush);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 300;
+    border: 1.5px dashed var(--blush);
+    background: white;
+    opacity: 0.5;
+  }
+  .photo-placeholder .icon { font-size: 2rem; }
+
+  .photo-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 30px 16px 16px;
+    background: linear-gradient(to top, rgba(42,20,32,0.7), transparent);
+    color: white;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    font-weight: 300;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .photo-card:hover .photo-caption { opacity: 1; }
+
+  /* LETTER */
+  #carta {
+    padding: 90px 20px;
+    background: linear-gradient(160deg, #f9ede3, #fdf6f0);
+    position: relative; z-index: 1;
+  }
+
+  .letter-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .envelope-icon {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 30px;
+    cursor: pointer;
+    transition: transform 0.4s;
+    display: block;
+  }
+  .envelope-icon:hover { transform: scale(1.1) rotate(-5deg); }
+
+  .letter-body {
+    background: white;
+    padding: 50px 50px 60px;
+    position: relative;
+    box-shadow: 0 20px 80px rgba(200,83,106,0.1);
+    border-top: 3px solid var(--rose);
+    display: none;
+  }
+  .letter-body.open { display: block; animation: openLetter 0.6s ease forwards; }
+  @keyframes openLetter {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .letter-body::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 140px;
+    color: var(--blush);
+    position: absolute;
+    top: -20px; left: 20px;
+    line-height: 1;
+    opacity: 0.5;
+  }
+
+  .letter-date {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--rose);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    font-weight: 300;
+  }
+  .letter-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    line-height: 1.9;
+    font-weight: 300;
+    color: var(--deep);
+    position: relative; z-index: 1;
+  }
+  .letter-text .name-highlight {
+    color: var(--rose);
+    font-style: italic;
+  }
+  .letter-signature {
+    margin-top: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--gold);
+    text-align: right;
+  }
+  .letter-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--rose);
+    text-transform: uppercase;
+    font-weight: 300;
+    opacity: 0.8;
+  }
+
+  /* REASONS */
+  #razones {
+    padding: 90px 20px;
+    background: var(--deep);
+    position: relative; z-index: 1;
+    overflow: hidden;
+  }
+  #razones::after {
+    content: '∞';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 400px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    color: white;
+    opacity: 0.015;
+    pointer-events: none;
+  }
+
+  .reasons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .reason-card {
+    padding: 36px 28px;
+    border: 1px solid rgba(200,83,106,0.2);
+    background: rgba(255,255,255,0.03);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+  }
+  .reason-card:hover {
+    border-color: var(--rose);
+    background: rgba(200,83,106,0.06);
+    transform: translateY(-4px);
+  }
+  .reason-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--rose);
+    transition: height 0.4s ease;
+  }
+  .reason-card:hover::before { height: 100%; }
+  .reason-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--rose);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .reason-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--blush);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* FINAL */
+  #final {
+    padding: 100px 20px;
+    text-align: center;
+    background: linear-gradient(160deg, #f9ede3, var(--cream));
+    position: relative; z-index: 1;
+  }
+  .final-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--deep);
+    line-height: 1.4;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .final-text em { color: var(--rose); font-style: italic; }
+  .hearts {
+    margin-top: 50px;
+    display: flex; justify-content: center; gap: 16px;
+  }
+  .heart {
+    font-size: 1.5rem;
+    animation: heartbeat 1.4s ease-in-out infinite;
+    display: inline-block;
+  }
+  .heart:nth-child(2) { animation-delay: 0.2s; font-size: 2rem; }
+  .heart:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  /* MODAL */
+  .modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,0,5,0.92);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .modal.active { display: flex; }
+  .modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal img, .modal video {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    box-shadow: 0 30px 100px rgba(200,83,106,0.3);
+    border-radius: 12px;
+  }
+  .modal-close {
+    position: absolute; top: 28px; right: 36px;
+    color: white; font-size: 2.5rem;
+    cursor: pointer; opacity: 0.6;
+    transition: opacity 0.2s;
+    font-family: 'Cormorant Garamond', serif;
+    background: none; border: none;
+    z-index: 1001;
+  }
+  .modal-close:hover { opacity: 1; }
+
+  /* MUSIC PROMPT OVERLAY */
+  #musicPrompt {
+    position: fixed; inset: 0;
+    background: rgba(10,0,5,0.7);
+    backdrop-filter: blur(15px);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.8s ease, visibility 0.8s;
+  }
+  #musicPrompt.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  
+  .prompt-card {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+    border: 1px solid rgba(200,83,106,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .prompt-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, var(--rose), var(--gold));
+  }
+  .prompt-icon { font-size: 3.5rem; margin-bottom: 20px; display: block; animation: float 3s ease-in-out infinite; }
+  .prompt-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 15px;
+  }
+  .prompt-text {
+    font-size: 0.9rem;
+    color: var(--wine);
+    opacity: 0.8;
+    margin-bottom: 35px;
+    line-height: 1.6;
+  }
+  .prompt-btns { display: flex; flex-direction: column; gap: 12px; }
+  .btn-yes {
+    background: var(--rose);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 100px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn-yes:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(200,83,106,0.3); }
+  .btn-no {
+    background: transparent;
+    color: var(--wine);
+    padding: 12px;
+    border: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+  .btn-no:hover { opacity: 1; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Music Prompt -->
+<div id="musicPrompt">
+  <div class="prompt-card">
+    <span class="prompt-icon">🎵</span>
+    <h2 class="prompt-title">¿Deseas escuchar nuestra música de amor?</h2>
+    <p class="prompt-text">He preparado algo especial para ti, mi niña. Activa el sonido para vivir la experiencia completa.</p>
+    <div class="prompt-btns">
+      <button class="btn-yes" onclick="startWithMusic(true)">Sí, quiero escuchar 💕</button>
+      <button class="btn-no" onclick="startWithMusic(false)">Solo entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<!-- Petals -->
+<div id="particles"></div>
+
+<!-- ─── MUSIC ─── -->
+<!-- 🎵 Coloca tu canción en: cancion/cancion.mp3 -->
+<audio id="bgMusic" loop>
+  <source src="cancion/Gracias, Silvestre Dangond - Letra.mp3" type="audio/mpeg">
+  <source src="cancion/Gracias, Silvestre Dangond - Letra.mp3" type="audio/ogg">
+</audio>
+<button id="musicBtn" onclick="toggleMusic()" title="Música">
+  <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="musicIcon">
+    <polygon points="5 3 19 12 5 21 5 3" fill="white"></polygon>
+  </svg>
+</button>
+<div class="music-label" id="musicLabel">Nuestra canción</div>
+
+<!-- ░░░ HERO ░░░ -->
+<section id="hero">
+  <p class="hero-badge">25 de Junio, 2025 — Hoy</p>
+  <div class="hero-number">8</div>
+  <div class="hero-meses">Meses contigo a tu lado mi niña</div>
+  <div class="hero-name">Shadya</div>
+  <div class="hero-divider"></div>
+  <p class="hero-sub">Cada día, más enamorado de ti</p>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ░░░ COUNTER ░░░ -->
+<section id="counter">
+  <p class="counter-title">El tiempo que llevamos juntos</p>
+  <div class="counter-grid">
+    <div class="counter-box">
+      <div class="counter-num" id="cnt-months">0</div>
+      <div class="counter-label">Meses</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="cnt-days">0</div>
+      <div class="counter-label">Días</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="cnt-hours">0</div>
+      <div class="counter-label">Horas</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="cnt-mins">0</div>
+      <div class="counter-label">Minutos</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="cnt-secs">0</div>
+      <div class="counter-label">Segundos</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ FOTOS ░░░ -->
+<!--
+  ════════════════════════════════════════════════
+  📸 INSTRUCCIONES PARA LAS FOTOS:
+  Pon tus fotos en la carpeta /fotos/ con nombres:
+    foto1.jpg, foto2.jpg, ... foto6.jpg
+  Y cambia los "caption" abajo por tus textos.
+  ════════════════════════════════════════════════
+-->
+<section id="fotos">
+  <div class="section-header reveal">
+    <p class="section-eyebrow">Nuestros Momentos</p>
+    <h2 class="section-title">Cada foto, un recuerdo</h2>
+  </div>
+  <div class="photo-grid" id="photoGrid"></div>
+</section>
+
+<!-- ░░░ CARTA ░░░ -->
+<section id="carta">
+  <div class="section-header reveal">
+    <p class="section-eyebrow">Para Ti</p>
+    <h2 class="section-title">Una carta con el corazón</h2>
+  </div>
+  <div class="letter-wrap">
+    <p class="letter-hint" id="letterHint">Toca el sobre para abrir la carta 💌</p>
+    <span class="envelope-icon" id="envelopeBtn" onclick="toggleLetter()">💌</span>
+    <div class="letter-body" id="letterBody">
+      <p class="letter-date">25 de Febrero, 2026</p>
+      <!-- ✏ EDITA AQUÍ TU CARTA PERSONAL -->
+      <p class="letter-text" id="letterText">
+        Mi amada <span class="name-highlight">Shadya</span>,<br><br>
+        Hoy celebramos 8 meses y, al detenernos un momento a mirar todo el camino recorrido, me doy cuenta de que lo que hemos construido es mucho más que una simple cifra en el calendario; es una historia real, con sus luces y sus sombras, que nos ha transformado profundamente. No quiero simplemente decirte que te amo, quiero agradecerte por la valentía de quedarte cuando las cosas se pusieron grises. Hemos pasado por tormentas, por malentendidos y por situaciones que realmente pusieron a prueba nuestra paciencia y nuestra fuerza, pero hoy me llena de un orgullo inmenso ver que, a pesar de cada obstáculo y cada problema que intentó desestabilizarnos, siempre elegimos tomarnos de la mano con más fuerza en lugar de soltarnos. Gracias por enseñarme que el amor no es un camino perfecto y plano, sino la capacidad de escalar juntos las montañas más empinadas y salir fortalecidos de ellas; gracias por la paciencia infinita, por el perdón honesto y por esa resiliencia que nos define como pareja. Valoro cada risa y cada momento de felicidad, pero valoro aún más nuestra capacidad de sanar, de aprender de nuestros errores y de seguir apostando por nosotros cuando el panorama no era sencillo. Eres mi lugar seguro, mi mayor aprendizaje y la persona con la que he descubierto que los problemas no son el fin de nada, sino la oportunidad de demostrarnos de qué estamos hechos. Gracias por estos 8 meses de crecimiento constante, por no rendirte y por demostrarme que, si hay voluntad y un sentimiento tan puro como el nuestro, somos capaces de superar absolutamente todo lo que venga. Te amo por lo que somos cuando todo es alegría, pero te amo mucho más por la guerrera que has sido a mi lado en los momentos difíciles. Feliz aniversario, mi amor.
+      </p>
+      <p class="letter-signature">Con todo mi amor mi niña 🤍🌹</p>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ RAZONES ░░░ -->
+<section id="razones">
+  <div class="section-header reveal">
+    <p class="section-eyebrow" style="color:var(--blush);opacity:0.7;">Por qué te amo</p>
+    <h2 class="section-title" style="color:var(--blush);">8 razones para quererte</h2>
+  </div>
+  <div class="reasons-grid" id="reasonsGrid"></div>
+</section>
+
+<!-- ░░░ FINAL ░░░ -->
+<section id="final">
+  <p class="final-text">
+    Que sean <em>8 meses</em> el comienzo de algo que dure <em>toda la vida</em>.<br>
+    Te amo, <em>Shadya</em>.
+  </p>
+  <div class="hearts">
+    <span class="heart">🌹</span>
+    <span class="heart">♥</span>
+    <span class="heart">🌹</span>
+  </div>
+</section>
+
+<!-- Modal foto/video ampliada -->
+<div class="modal" id="photoModal">
+  <button class="modal-close" onclick="closeModal()">×</button>
+  <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
+    <!-- Aquí se inyecta img o video -->
+  </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────
+//  📸 CONFIGURA AQUÍ TUS FOTOS
+//  src: ruta relativa desde la carpeta del proyecto
+//  caption: texto que aparece al pasar el mouse
+// ──────────────────────────────────────────────────
+const media = [
+  { type: 'image', src: 'fotos/Minovia1.jpeg', caption: 'Nuestro primer momento juntos 💕' },
+  { type: 'image', src: 'fotos/Minovia2.jpeg', caption: 'Contigo, siempre 🌹'             },
+  { type: 'video', src: 'fotos/MinoviaVideo.mp4', caption: 'Momentos en movimiento 🎬'  },
+  { type: 'image', src: 'fotos/Minovia3.jpeg', caption: 'Momentos que atesoro'             },
+  { type: 'image', src: 'fotos/Minovia4.jpeg', caption: 'Mi lugar favorito: a tu lado'     },
+  { type: 'video', src: 'fotos/MinoviaVideo2.mp4', caption: 'Nuestras risas juntas ❤️'   },
+  { type: 'image', src: 'fotos/Minovia5.jpeg', caption: 'Recuerdos eternos'                },
+  { type: 'image', src: 'fotos/Minovia6.jpeg', caption: 'Juntos somos perfectos'           },
+];
+
+// ──────────────────────────────────────────────────
+//  💝 CONFIGURA AQUÍ TUS RAZONES
+// ──────────────────────────────────────────────────
+const reasons = [
+  'Tu sonrisa ilumina cualquier cuarto en el que entras',
+  'La forma en que me haces reír como nadie más puede',
+  'Tu corazón tan grande y lleno de bondad',
+  'Cómo me haces sentir en casa cuando estoy contigo',
+  'Tu fuerza y determinación que me inspiran cada día',
+  'La forma en que me miras y me hace sentir el hombre más afortunado',
+  'Tu voz, que es la melodía más bonita que conozco',
+  'Simplemente… por ser tú, Shadya',
+];
+
+// ─── SCROLL REVEAL (Mover arriba para que esté disponible) ───
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+window.revealObserver = revealObserver;
+
+// ─── CURSOR ───────────────────────────────────────
+const cur = document.getElementById('cur');
+const curRing = document.getElementById('curRing');
+document.addEventListener('mousemove', e => {
+  cur.style.transform = `translate(${e.clientX - 6}px, ${e.clientY - 6}px)`;
+  setTimeout(() => {
+    curRing.style.transform = `translate(${e.clientX - 18}px, ${e.clientY - 18}px)`;
+  }, 80);
+});
+
+// ─── PETALS ───────────────────────────────────────
+const petalContainer = document.getElementById('particles');
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.style.cssText = `
+    left: ${Math.random()*100}%;
+    width: ${4 + Math.random()*8}px;
+    height: ${4 + Math.random()*8}px;
+    animation-duration: ${6 + Math.random()*10}s;
+    animation-delay: ${Math.random()*8}s;
+    opacity: ${0.3 + Math.random()*0.5};
+    background: hsl(${340 + Math.random()*20}, ${60+Math.random()*30}%, ${80+Math.random()*10}%);
+  `;
+  petalContainer.appendChild(p);
+}
+
+// ─── COUNTER ──────────────────────────────────────
+const startDate = new Date('2025-06-25T00:00:00');
+function updateCounter() {
+  const now  = new Date();
+  const diff = now - startDate;
+  const months = Math.floor(diff / (1000*60*60*24*30.44));
+  const days    = Math.floor(diff / (1000*60*60*24));
+  const hours   = Math.floor(diff / (1000*60*60));
+  const mins    = Math.floor(diff / (1000*60));
+  const secs    = Math.floor(diff / 1000);
+  document.getElementById('cnt-months').textContent = months;
+  document.getElementById('cnt-days').textContent   = days;
+  document.getElementById('cnt-hours').textContent  = hours.toLocaleString();
+  document.getElementById('cnt-mins').textContent   = mins.toLocaleString();
+  document.getElementById('cnt-secs').textContent   = secs.toLocaleString();
+}
+updateCounter();
+setInterval(updateCounter, 1000);
+
+// ─── PHOTOS ───────────────────────────────────────
+function renderPhotos() {
+  const grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  media.forEach((m, i) => {
+    const card = document.createElement('div');
+    card.className = 'photo-card reveal';
+    
+    if (m.type === 'video') {
+      card.innerHTML = `
+        <video src="${m.src}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openModal('${m.src}', 'video')"></video>
+        <div class="video-overlay"><span class="icon">▶</span></div>
+        <div class="photo-caption">${m.caption}</div>
+      `;
+    } else {
+      card.innerHTML = `
+        <img src="${m.src}" alt="${m.caption}" onclick="openModal('${m.src}', 'image')" loading="lazy">
+        <div class="photo-caption">${m.caption}</div>
+      `;
+    }
+
+    // Manejo de error
+    const el = card.querySelector(m.type === 'video' ? 'video' : 'img');
+    el.onerror = () => {
+      card.innerHTML = `
+        <div class="photo-placeholder">
+          <span class="icon">🌸</span>
+          <span>${m.src.split('/').pop()}</span>
+        </div>`;
+    };
+
+    grid.appendChild(card);
+  });
+  
+  if (window.revealObserver) {
+    document.querySelectorAll('.photo-card.reveal').forEach(el => window.revealObserver.observe(el));
+  }
+}
+renderPhotos();
+
+// ─── MODAL ────────────────────────────────────────
+function openModal(src, type) {
+  const modal = document.getElementById('photoModal');
+  const content = document.getElementById('modalContent');
+  
+  if (type === 'video') {
+    content.innerHTML = `<video src="${src}" controls autoplay class="modal-media"></video>`;
+  } else {
+    content.innerHTML = `<img src="${src}" alt="Foto ampliada" class="modal-media">`;
+  }
+  
+  modal.classList.add('active');
+  
+  // Cerrar al hacer clic fuera
+  modal.onclick = (e) => {
+    if (e.target === modal) closeModal();
+  };
+}
+
+function closeModal() {
+  const modal = document.getElementById('photoModal');
+  const content = document.getElementById('modalContent');
+  
+  // Detener video si existe
+  const video = content.querySelector('video');
+  if (video) video.pause();
+  
+  modal.classList.remove('active');
+  setTimeout(() => { content.innerHTML = ''; }, 300);
+}
+
+// ─── LETTER ───────────────────────────────────────
+let letterOpen = false;
+function toggleLetter() {
+  letterOpen = !letterOpen;
+  const body = document.getElementById('letterBody');
+  const hint = document.getElementById('letterHint');
+  body.classList.toggle('open', letterOpen);
+  hint.style.display = letterOpen ? 'none' : 'block';
+}
+
+// ─── REASONS ──────────────────────────────────────
+function renderReasons() {
+  const grid = document.getElementById('reasonsGrid');
+  grid.innerHTML = '';
+  reasons.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.className = 'reason-card';
+    card.innerHTML = `
+      <div class="reason-num">0${i+1}</div>
+      <p class="reason-text">${r}</p>`;
+    grid.appendChild(card);
+  });
+}
+renderReasons();
+
+// ─── MUSIC ────────────────────────────────────────
+const audio = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+let playing = false;
+let noteInterval;
+
+function createNote() {
+  if (!playing) return;
+  const noteSymbols = ['♪', '♫', '♬', '♩', '🌸'];
+  const note = document.createElement('div');
+  note.className = 'note';
+  note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+  
+  const btnRect = musicBtn.getBoundingClientRect();
+  const startX = btnRect.left + btnRect.width / 2;
+  const startY = btnRect.top + btnRect.height / 2;
+  
+  note.style.left = `${startX}px`;
+  note.style.top = `${startY}px`;
+  
+  // Destinos aleatorios
+  const x = (Math.random() - 0.5) * 200;
+  const y = -100 - Math.random() * 150;
+  const r = (Math.random() - 0.5) * 90;
+  
+  note.style.setProperty('--x', `${x}px`);
+  note.style.setProperty('--y', `${y}px`);
+  note.style.setProperty('--r', `${r}deg`);
+  
+  document.body.appendChild(note);
+  setTimeout(() => note.remove(), 3000);
+}
+
+function startWithMusic(play) {
+  const prompt = document.getElementById('musicPrompt');
+  prompt.classList.add('hidden');
+  
+  if (play) {
+    toggleMusic();
+  }
+}
+
+function toggleMusic() {
+  const musicIcon = document.getElementById('musicIcon');
+  if (playing) {
+    audio.pause();
+    musicIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3" fill="white"></polygon>';
+    musicBtn.classList.remove('playing');
+    document.getElementById('musicLabel').textContent = 'Nuestra canción';
+    clearInterval(noteInterval);
+  } else {
+    audio.play().catch(() => {});
+    musicIcon.innerHTML = `
+      <rect x="6" y="4" width="4" height="16" fill="white"></rect>
+      <rect x="14" y="4" width="4" height="16" fill="white"></rect>
+    `;
+    musicBtn.classList.add('playing');
+    document.getElementById('musicLabel').textContent = 'Reproduciendo ♫';
+    noteInterval = setInterval(createNote, 400);
+  }
+  playing = !playing;
+}
+
+// Eliminar el autoplay por clic ya que ahora tenemos el prompt
+// document.addEventListener('click', function autoplay() {
+//   if (!playing) toggleMusic();
+//   document.removeEventListener('click', autoplay);
+// }, { once: true });
+
+// Inicializar elementos reveal existentes
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+</body>
+</html>

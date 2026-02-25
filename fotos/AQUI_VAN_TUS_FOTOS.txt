@@ -1,0 +1,18 @@
+📸 INSTRUCCIONES - CARPETA DE FOTOS
+=====================================
+
+Coloca aquí las fotos de ustedes con estos nombres exactos:
+
+  foto1.jpg
+  foto2.jpg
+  foto3.jpg
+  foto4.jpg
+  foto5.jpg
+  foto6.jpg
+
+Puedes usar .jpg, .jpeg o .png (actualiza la extensión en index.html si usas .png)
+
+También puedes cambiar el pie de foto de cada imagen editando
+la sección "captions" en el archivo index.html.
+
+¡Puedes agregar más fotos si quieres! Solo sigue el patrón en el código.
